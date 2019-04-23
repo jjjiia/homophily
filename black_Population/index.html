@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>basic located</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+    
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+  
+    
+    <style>
+        body{
+            font-size:9px;
+            font-family: 'Libre Baskerville', serif;
+        }
+        #chart{
+            width:800px;
+            height:1100px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="chart"></div>
+		<script type="text/javascript"> 
+            
+       
+            var data = {
+                l:{total:300,b:218,w:82,l:{b:190,w:37},a:{b:28,w:37},i:{b:0,w:8}},
+                a:{total:136,b:28,w:108,l:{b:22,w:37},a:{b:6,w:52},i:{b:0,w:19}},
+                i:{total:51,b:1,w:50,l:{b:1,w:10},a:{b:0,w:28},i:{b:0,w:12}}
+            }
+            var tb = 247
+            var tw = 240
+            var w = 800
+            var h = 1100
+            var svg=d3.select("#chart").append("svg")
+                    .attr("width",w)
+                    .attr("height",h)
+            var grid = 9
+            var columns = 10
+            var padding = 30
+            var i = new Array(data.a.total);
+            var a = new Array(data.i.total);
+            
+            dots(data.l,"black","Liberal",w/2-grid*columns*1.5-grid*2)
+            dots(data.a,"black","Ambivalent",w/2-grid*columns/2)
+            dots(data.i,"black","Illiberal",w/2+grid*columns/2+grid*2)
+       
+        svg.append("rect").attr("x",w/2).attr("y",60).attr("width",2).attr("height",0).attr("class","divider").transition().duration(3000)
+        .delay(4400).attr("height",250)
+            
+            separateRace("Liberal",0,4000)
+            separateRace("Ambivalent",grid*columns+grid,4200)
+            separateRace("Illiberal",grid*columns*2+grid*2,4400)
+            friendships(7000)
+            counts(10000)
+            homophily(12000)
+            eraseAll(20000)
+            recount(22000)
+            function eraseAll(delay){
+                d3.selectAll("text").transition().delay(delay).remove()
+                d3.selectAll("rect").transition().delay(delay).remove()
+                .on("end",function(){
+                    d3.selectAll(".overselection").remove()
+                })
+                
+                d3.selectAll("circle").transition().delay(delay).attr("opacity",1)
+            }
+            
+            function recount(delay){
+                
+                d3.selectAll("circle").transition()
+                .delay(function(d,i){
+                    return delay+i*10
+                }).duration(1000).attr("opacity",1).attr("fill","black")
+                .attr("cx",function(d,i){
+                   // console.log(i%(columns*2)*grid,Math.ground(i/(columns*2))*grid)
+                    return i%(columns*2)*grid+w/2-grid*columns
+                })
+                .attr("cy",function(d,i){
+                   // return 100
+                    return Math.floor(i/(columns*2))*grid+h/3
+                })
+                
+            }
+            
+    function homophily(delay){
+        svg.append("text").text("Overselection").attr("x",w/8*5).attr("y",300).attr("font-size",24)
+            .attr("opacity",0).transition().delay(delay+1000).duration(1000).attr("opacity",1).attr("fill","red")
+        
+        var d = "M511,187.47c-21.27-72.82-120.72-41-164.53-11.28C299.88,207.76,268,256.87,245.3,307.43,236,328.14,229,349.55,221,370.73c-21.17,55.94-22,118.41-13.48,177,8.41,57.95,24.62,121.52,63.2,167.17,79.8,94.44,241.07,50.18,290.29-53.23"
+        var transform = "translate(180 240)"
+        
+       
+        
+        
+        svg.append("path").attr("class","homophily").attr("d",d).attr("fill","none").attr("stroke","red").attr("stroke-width",3)
+        .attr("transform",transform).attr("opacity",0)        
+        .attr("class","overselection")
+
+        .transition()
+        .delay(delay)
+        .attr("opacity",0)
+        .on("end",function(){
+            d3.select("path").attr("opacity",1)
+            smallCircle(110,40,3000)
+            smallCircle(130,560,3000)
+            
+            smallCircle(210,230,3000)
+            smallCircle(230,560,3000)
+            
+            smallCircle(310,410,3000)
+            smallCircle(330,560,3000)
+            
+            d3.select("path").transition().duration(3000).attrTween("stroke-dasharray",tweenDash)
+        })        
+    }
+    function tweenDash() {
+      var l = this.getTotalLength(),
+          i = d3.interpolateString("0," + l, l + "," + l);
+      return function(t) { return i(t); };
+    }
+    function smallCircle(x,y,duration){
+         var sd = "M331.23,408.26c4-5.93,12-16.35,20.49-11.32,6.61,3.95,6,17.35,3.64,23.34-4.46,11.39-11.45,22.49-22.32,28.11s-26.13,3.86-32.89-6.34c-5.43-8.19-4.1-19.26-.14-28.25a56.35,56.35,0,0,1,14.46-19.67c4.27-3.73,9.38-6.89,15-7.24s11.8,2.89,13.29,8.36A18.72,18.72,0,0,1,343,402q-.69,7-2,13.89"
+        svg.append("path").attr("d",sd)
+        .attr("fill","none")
+        .attr("class","overselection")
+        .attr("transform","translate("+x+","+y+")")
+        .attr("stroke","red")
+        .transition().duration(duration).attrTween("stroke-dasharray",tweenDash)
+        
+    }
+            
+    function counts(delay){
+        d3.selectAll(".w").transition().delay(delay).duration(1000).attr("opacity",.3)
+        d3.selectAll(".b").transition().delay(delay).duration(1000).attr("opacity",.3)
+        var groups = ["Liberal","Ambivalent","Illiberal"]
+        var friends = ["friendL","friendA","friendI"]
+        var classes  = []
+        for(var g in groups){
+            for(var f in friends){
+                classes.push(groups[g]+"_"+friends[f])
+            }
+        }
+        for(var c in classes){
+            var yOffset = (c%3)*180+400+90
+            var xOffset = (Math.floor(c/3))*columns*grid+(Math.floor(c/3))*grid+columns*grid+grid*columns/2
+            var count = d3.selectAll(".b_"+classes[c])["_groups"][0].length
+            svg.append("text").text(count).attr("x",xOffset).attr("y",yOffset).attr("opacity",0).attr("text-anchor","middle")
+            .attr("font-size",24)
+            .attr("class","count")
+            .attr("count",count)
+            .transition().delay(delay).attr("opacity",1)
+                        
+            var total = d3.selectAll("."+classes[c].split("_")[0]+"_b")["_groups"][0].length
+            var percent = Math.round(count/total*100)+"%"
+            svg.append("text").text(percent).attr("x",xOffset).attr("y",yOffset-30).attr("opacity",0).attr("text-anchor","middle")
+            .attr("font-size",24)
+            .attr("class","percent")
+            .transition().delay(delay+1000).duration(1000).attr("opacity",1)
+            
+            d3.selectAll(".count").transition().delay(delay+1000).duration(1000).attr("font-size",18)
+            .text(function(){
+               var count = d3.select(this).attr("count")
+               return "("+count+")"
+            })
+            
+            var columnPercent = Math.round(total/tw*100)+"%"
+            if(c%3==0){
+                svg.append("text").attr("class","totals").text("("+total+")").attr("x",xOffset+20).attr("y",960).attr("font-size",18)
+            .attr("opacity",0).transition().delay(delay+1000).attr("opacity",1)
+                
+                svg.append("text").attr("class","totals").text(columnPercent).attr("x",xOffset).attr("y",1000).attr("font-size",24)
+            .attr("opacity",0).transition().delay(delay+1000).attr("opacity",1)
+                
+            }
+        }
+        
+        for(var c in classes){
+            var yOffset = (c%3)*180+400+90
+            var xOffset = (Math.floor(c/3))*columns*grid+(Math.floor(c/3))*grid+columns*grid+grid*columns/2+w/8*3
+            var count = d3.selectAll(".w_"+classes[c])["_groups"][0].length
+            svg.append("text").text(count).attr("x",xOffset).attr("y",yOffset).attr("opacity",0).attr("text-anchor","middle")
+            .attr("class","count")
+            .attr("count",count)
+            .attr("font-size",24)
+            .transition().delay(delay).attr("opacity",1)
+            
+            var total = d3.selectAll("."+classes[c].split("_")[0]+"_w")["_groups"][0].length
+            var percent = Math.round(count/total*100)+"%"
+            svg.append("text").text(percent).attr("x",xOffset).attr("y",yOffset-30).attr("opacity",0).attr("text-anchor","middle")
+            .attr("font-size",24)
+            .attr("class","percent")
+            .transition().delay(delay+1000).duration(1000).attr("opacity",1)
+            
+            d3.selectAll(".count").transition().delay(delay+1000).duration(1000).attr("font-size",18)
+            .text(function(){
+               var count = d3.select(this).attr("count")
+               return "("+count+")"
+            })
+            
+            .attr("opacity",0).transition().delay(delay+1000).attr("opacity",1)
+            
+            var columnPercent = Math.round(total/tw*100)+"%"
+            if(c%3==0){
+                svg.append("text").attr("class","totals").text("("+total+")").attr("x",xOffset+20).attr("y",960).attr("font-size",18)
+            .attr("opacity",0).transition().delay(delay+1000).attr("opacity",1)
+                
+                svg.append("text").attr("class","totals").text(columnPercent).attr("x",xOffset).attr("y",1000).attr("font-size",24)
+            .attr("opacity",0).transition().delay(delay+1000).attr("opacity",1)
+                
+            }
+            
+        }
+        
+        
+      //  for (var k in groups){
+      //      var total = d3.selectAll("."+groups[k]+"_b")["_groups"][0].length
+      //      var percent = Math.round(total/tb*100)+"%"
+      //      console.log(total,percent)
+      //  }
+        
+        
+        
+        
+    }
+            
+    function friendships(delay){
+            //svg.append("text").text("Friend:").attr("x",padding).attr("y",400).attr("opacity",0)
+            //.transition().delay(delay).attr("opacity",1)
+        
+            var labels = ["","Liberal","","","","","","Ambivalent","","","","","","Illiberal","","","","","","Total Cases","% in Population"]
+        
+    svg.selectAll(".friendText")
+        .data(labels)
+        .enter()
+        .append("text")
+        .text(function(d){return d})
+        .attr("x",padding)
+        .attr("y",function(d,i){return i*30+400})
+        .attr("opacity",0)
+        .transition()
+        .delay(delay)
+        .attr("opacity",1)
+        
+        d3.selectAll(".raceLabel").transition().delay(delay).duration(1000).attr("y",360)
+        d3.selectAll(".labels").transition().delay(delay).duration(1000).attr("y",380)
+        var groups = ["Liberal","Ambivalent","Illiberal"]
+        var friends = ["friendL","friendA","friendI"]
+        var classes  = []
+        for(var g in groups){
+            for(var f in friends){
+                classes.push(groups[g]+"_"+friends[f])
+            }
+        }
+        //console.log(classes)
+        for(var c in classes){
+            var yOffset = (c%3)*180+400
+            var xOffset = (Math.floor(c/3))*columns*grid+(Math.floor(c/3))*grid+columns*grid
+            
+            //console.log(yOffset, xOffset)
+            
+            d3.selectAll(".b_"+classes[c])
+            .transition().delay(function(d,i){return i*10+delay})
+            .attr("cy",function(d,i){
+                return Math.floor(i/columns)*grid+yOffset
+            })
+            .attr("cx",function(d,i){
+                return (i%columns)*grid+grid+xOffset
+            })
+        }
+        
+        for(var c in classes){
+            var yOffset = (c%3)*180+400
+            var xOffset = (Math.floor(c/3))*columns*grid+(Math.floor(c/3))*grid+columns*grid+w/8*3+grid
+            
+            d3.selectAll(".w_"+classes[c])
+            .transition().delay(function(d,i){return i*20+delay})
+            .attr("cy",function(d,i){
+                return Math.floor(i/columns)*grid+yOffset
+            })
+            .attr("cx",function(d,i){
+                return (i%columns)*grid+grid+xOffset
+            })
+        }
+        d3.select(".divider").transition().delay(delay).attr("y",360).attr("height",500)
+        svg.append("rect").attr("x",padding).attr("y",390).attr("width",0).attr("height",2).attr("class","divider").transition().duration(3000)
+        .delay(delay).attr("width",w)
+        svg.append("rect").attr("x",padding).attr("y",570).attr("width",0).attr("height",2).attr("class","divider").transition().duration(3000)
+        .delay(delay).attr("width",w)
+        svg.append("rect").attr("x",padding).attr("y",750).attr("width",0).attr("height",2).attr("class","divider").transition().duration(3000)
+        .delay(delay).attr("width",w)
+    }
+            
+    function dots(data,color,label,xOffset){
+        var l = new Array(data.total);       
+        svg.append("text").text(label).attr("x",grid+xOffset).attr("y",grid).attr("fill",color).attr("class",label+"_text_w labels")    
+        svg.append("text").text(label).attr("x",grid+xOffset).attr("y",grid).attr("fill",color).attr("class",label+"_text_b labels")    
+        
+        svg.selectAll("."+label)
+        .data(l)
+        .enter()
+        .append("circle")
+        .attr("cx",function(d,i){
+            return (i%columns)*grid+grid+xOffset
+        })
+        .attr("cy",function(d,i){
+            return Math.floor(i/columns)*grid+grid*2
+        })
+        .attr("r",0)
+        .attr("class",function(d,i){
+            if(i<data.w){
+                if(i<data.l.w){
+                    return label+"_"+"w"+" w"+" "+label+" w_"+label+"_friendL"+" friendL"
+                }else if(i>=data.l.w && i<data.l.w+data.a.w){
+                    return label+"_"+"w"+" w"+" "+label+" w_"+label+"_friendA"+" friendA"
+                }else{
+                    return label+"_"+"w"+" w"+" "+label+" w_"+label+"_friendI"+" friendI"
+                }
+                //return label+"_"+"w"+" w"+" "+label
+                //                l:{total:300,b:218,w:82,l:{b:190,w:37},a:{b:22,w:37},i:{b:1,w:10}},
+
+            }else{
+                if(i<data.l.b+data.w){
+                    return label+"_"+"b"+" b"+" "+label+" b_"+label+"_friendL"+" friendL"
+                }else if(i>=data.l.b+data.w && i<data.l.b+data.a.b+data.w){
+                    return label+"_"+"b"+" b"+" "+label+" b_"+label+"_friendA"+" friendA"
+                }else{
+                    return label+"_"+"b"+" b"+" "+label+" b_"+label+"_friendI"+" friendI"
+                }
+            }
+        })
+        .attr("opacity",1)
+        .transition()
+        .duration(100)
+        .delay(function(d,i){return i*2})
+        .attr("r",grid/3)    
+        .attr("fill",color)
+        .attr("stroke",color)
+        
+        d3.selectAll("circle")
+        .on("mouseover",function(){
+            console.log(d3.select(this).attr("class"))
+        })
+       
+    }  
+    function separateRace(label,offset,delay){
+        
+        svg.append("text").text("HILLTOWN NEGROS").attr("x",w/4).attr("y",80).attr("class","raceLabel")//.attr("text-anchor","middle")
+        .attr("opacity",0).transition().delay(delay).attr("opacity",1)
+        svg.append("text").text("HILLTOWN WHITES").attr("x",w/8*5).attr("y",80).attr("class","raceLabel")//.attr("text-anchor","middle")
+        .attr("opacity",0).transition().delay(delay).attr("opacity",1)
+        
+        d3.select("."+label+"_text_b").transition().delay(delay).attr("x",20+offset+grid*columns).attr("y",100)
+        d3.select("."+label+"_text_w").transition().delay(delay).attr("x",w/2+20+offset).attr("y",100)
+        
+        d3.selectAll("."+label+"_b")
+        .transition()
+        .delay(delay)
+        .duration(1000)
+        .attr("fill","none")
+        
+        d3.selectAll("."+label+"_b")
+        .transition()
+        .delay(function(d,i){return i*10+delay})
+        .duration(500)
+        .attr("cx",function(d,i){
+            return (i%columns)*grid+grid*columns+offset
+        })
+        .attr("cy",function(d,i){
+            return Math.floor(i/columns)*grid+grid*2+100
+        })
+        
+        d3.selectAll("."+label+"_w")
+        .transition()
+        .delay(function(d,i){return i*10+4000})
+        .duration(500)
+        .attr("cx",function(d,i){
+            return (i%columns)*grid+grid+w/2+offset
+        })
+        .attr("cy",function(d,i){
+            return Math.floor(i/columns)*grid+grid*2+100
+        })
+    }  
+
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>data manipulation</title>
+        <!-- make your own with https://www.favicon.cc/-->
+        <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <!-- we are loading v5 of d3 directly from the source-->
+		<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+		<style type="text/css">
+            body{
+                padding:20px;
+                font-size:11px;
+                font-family:helvetica;
+            }
+            .page{
+                margin-top:220px;
+            }
+           /*
+            .page:hover{
+                           transform: scale(1.1);
+                       }*/
+           
+            #tooltip{
+                position:absolute;
+                width:120px;
+                height:120px;
+                border:1px solid black;
+                padding:10px;
+                border-radius:5px;
+                background-color:rgba(255,255,255,.8);
+                visibility:hidden;
+            }
+            #comparison{
+                position:absolute;
+                left:1200px;
+                top:20px;
+                height:500px;
+                width:400px;
+                border:1px solid black;
+                padding:20px;
+                visibility:hidden;
+            }
+            #v0Title{
+                position:absolute;
+                left:0px;
+                top:20px;
+            }
+            #v1Title{
+                position:absolute;
+                left:600px;
+                top:20px;
+            }
+		</style>
+	</head>
+    <div id="chart1"></div>
+	<body>
+        
+        <div id = "v0Title">
+            <img src="version0_title.jpg"  style="width:500px;">
+        </div>
+        <div id = "v1Title">
+            <img src="version1_title.jpg"  style="width:500px;">
+        </div>
+        
+        <div class="pages" id = "v0"></div>
+        <div class="pages" id = "v1"></div>
+        <div id="comparison">
+            <strong>Before:</strong><br/><br/>
+            <img src="v0_q3.jpg"  style="width:400px;">
+            <br/>
+            <br/>
+            <br/>
+            <strong>After:</strong><br/><br/>
+            <img src="v1_q3.jpg"  style="width:400px;"><br/><br/>
+            <strong>Observation:</strong><br/><br/>
+            t nostro vocibus liberavisse duo, ad nostrum praesent eam. Et has odio impetus consulatu. Corrumpit honestatis quo ex, utinam dissentias efficiantur vel eu. Dicant qEt has odio impetus consulatu. Corrumpit honestatis quo ex, utinam dissentias efficiantur vel eu. Dicant quaerendum ullamcorper vix ea, vis nonumes facilisis ad.
+        </div>
+       
+        <div id="tooltip"></div>
+		<script type="text/javascript">
+            var w = 85
+            var h = 110
+            var rows = 5
+            var padding = 20
+            drawPageDivs(26,"v0",10,"203,86,88","January 1947")
+            drawPageDivs(22,"v1",w*7+padding,"184,143,62","Februrary 1947")
+            drawRandomHighlights()
+            
+            
+            function drawPageDivs(totalPages,version,offset,color,title){
+               
+                d3.select("#"+version).append("div").html(version+": "+title)
+                .style("position","absolute")
+                .style("left",offset+"px")
+                .style("top","5px")
+                .style("cursor","pointer")
+                .on("mouseover",function(){
+                    d3.selectAll("."+version).style("box-shadow","2px 2px 12px rgb(0,0,0,.7)")
+                })
+                .on("mouseout",function(){
+                    d3.selectAll("."+version).style("box-shadow","2px 2px 12px rgb(0,0,0,.1)")
+                })
+                
+                for(var i =0; i<totalPages-1; i++){
+                    d3.select("#"+version).append("div")
+                    .style("width",w+"px").style("height",h+"px")
+                    .style("left",function(){
+                      return Math.floor(i/rows)*(w+padding*1.5)+offset+"px"
+                    })
+                    .style("top",function(){
+                        return (i%rows)*(h+padding)+"px"
+                    })
+                    .style("position","absolute")
+                    //.style("box-shadow","2px 2px 12px rgb("+color+",.3)")
+                    .style("box-shadow","2px 2px 12px rgb(0,0,0,.1)")
+                    .attr("class",version+" page")
+                    .attr("id", version+"_"+i)
+                    
+                    var imageUrl = version+"/"+version+"-"+formatNumber(i+1)+".png"
+                    
+                    d3.select("#"+version+"_"+i)
+                    .append("img")
+                    .attr('xlink:href', imageUrl)
+                    .attr('src', imageUrl)
+                    .attr('x',0)
+                    .attr('y',0)
+                    .attr('width', w)
+                    .attr('height', h)
+                    
+                    drawRandomHighlights(version,i)
+                }
+            }
+            function drawRandomHighlights(version,page){
+               var svg = d3.select("#"+version+"_"+page)
+                        .append("svg")
+                        .attr("width",w)
+                        .attr("height",h)
+                        .style("position","absolute")
+                        .style("top",0)
+                        .style("left",0)
+            
+                var rh = Math.random()*h/3
+                var margin = h-rh
+                svg.append("rect")
+                .attr("width",w)
+                .attr("height",rh)
+                .attr("x",0)
+                .attr("y",Math.random()*(h-rh))
+                .attr("fill","yellow")
+                .attr("opacity",.4)
+                .attr("class","p_"+page)
+                .on("mouseover",function(){
+                    var cClass = d3.select(this).attr("class")
+                    d3.selectAll("."+cClass).attr("opacity",.7)
+                    d3.select("#v0_"+page).style("box-shadow","2px 2px 12px rgb(0,0,0,.6)")
+                    .style("transform","scale(1.2)")
+                    d3.select("#v1_"+page).style("box-shadow","2px 2px 12px rgb(0,0,0,.6)")
+                    .style("transform","scale(1.2)")
+                    
+                        var mx = event.clientX
+                        var my = event.clientY
+						var tooltipDiv = d3.select("#tooltip")
+							.style("left", mx + "px")
+							.style("top", my + "px")
+                            .html("On page "+page+" of the questionaire the researchers ...")
+                    
+                    d3.select("#tooltip").style("visibility","visible")
+                    d3.select("#comparison").style("visibility","visible")
+                    
+                })
+                .on("mouseout",function(){
+                    var cClass = d3.select(this).attr("class")
+                    d3.selectAll("."+cClass).attr("opacity",.4)
+                    d3.select("#tooltip").style("visibility","hidden")
+                    d3.select("#v0_"+page).style("box-shadow","2px 2px 12px rgb(0,0,0,.1)")
+                    .style("transform","scale("+(1)+")")
+                    d3.select("#v1_"+page).style("box-shadow","2px 2px 12px rgb(0,0,0,.1)")
+                    .style("transform","scale("+(1)+")")
+                    
+                    d3.select("#comparison").style("visibility","hidden")
+                })
+                
+            }
+            
+            function formatNumber(number){
+                return ("0" + number).slice(-2)
+            }
+            
+            
+            
+		</script>
+	</body>
+</html>

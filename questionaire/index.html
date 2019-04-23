@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>data manipulation</title>
+        <!-- make your own with https://www.favicon.cc/-->
+        <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <!-- we are loading v5 of d3 directly from the source-->
+		<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+		<style type="text/css">
+            body{
+                padding:20px;
+            }
+            .page{
+                margin-top:50px;
+            }
+            .page:hover{
+                transform: scale(1.1);
+            }
+            #tooltip{
+                position:absolute;
+                width:120px;
+                height:120px;
+                border:1px solid black;
+                padding:10px;
+                border-radius:5px;
+                background-color:rgba(255,255,255,.8);
+                visibility:hidden;
+            }
+		</style>
+	</head>
+    <div id="chart1"></div>
+	<body>
+        <div class="pages" id = "v0"></div>
+        <div class="pages" id = "v1"></div>
+        <div id="tooltip"></div>
+		<script type="text/javascript">
+            var w = 85
+            var h = 110
+            var rows = 6
+            var padding = 20
+            drawPageDivs(26,"v0",10,"203,86,88")
+            drawPageDivs(22,"v1",w+padding,"184,143,62")
+            drawRandomHighlights()
+            
+            
+            function drawPageDivs(totalPages,version,offset,color){
+               
+                d3.select("#"+version).append("div").html("version "+version)
+                .style("position","absolute")
+                .style("left",offset+"px")
+                .style("top","5px")
+                .style("cursor","pointer")
+                .on("mouseover",function(){
+                    d3.selectAll("."+version).style("box-shadow","2px 2px 12px rgb(0,0,0,.7)")
+                })
+                .on("mouseout",function(){
+                    d3.selectAll("."+version).style("box-shadow","2px 2px 12px rgb(0,0,0,.1)")
+                })
+                
+                for(var i =0; i<totalPages-1; i++){
+                    d3.select("#"+version).append("div")
+                    .style("width",w+"px").style("height",h+"px")
+                    .style("left",function(){
+                      return Math.floor(i/rows)*(w+padding*1.5)*2+offset+"px"
+                    })
+                    .style("top",function(){
+                        return (i%rows)*(h+padding)+"px"
+                    })
+                    .style("position","absolute")
+                    //.style("box-shadow","2px 2px 12px rgb("+color+",.3)")
+                    .style("box-shadow","2px 2px 12px rgb(0,0,0,.1)")
+                    .attr("class",version+" page")
+                    .attr("id", version+"_"+i)
+                    
+                    var imageUrl = version+"/"+version+"-"+formatNumber(i+1)+".png"
+                    
+                    d3.select("#"+version+"_"+i)
+                    .append("img")
+                    .attr('xlink:href', imageUrl)
+                    .attr('src', imageUrl)
+                    .attr('x',0)
+                    .attr('y',0)
+                    .attr('width', w)
+                    .attr('height', h)
+                    
+                    drawRandomHighlights(version,i)
+                }
+            }
+            function drawRandomHighlights(version,page){
+               var svg = d3.select("#"+version+"_"+page)
+                        .append("svg")
+                        .attr("width",w)
+                        .attr("height",h)
+                        .style("position","absolute")
+                        .style("top",0)
+                        .style("left",0)
+            
+                var rh = Math.random()*h/3
+                var margin = h-rh
+                svg.append("rect")
+                .attr("width",w)
+                .attr("height",rh)
+                .attr("x",0)
+                .attr("y",Math.random()*(h-rh))
+                .attr("fill","black")
+                .attr("opacity",.2)
+                .attr("class","p_"+page)
+                .on("mouseover",function(){
+                    var cClass = d3.select(this).attr("class")
+                    d3.selectAll("."+cClass).attr("fill","red")
+                    
+                    
+                        var mx = event.clientX
+                        var my = event.clientY
+						var tooltipDiv = d3.select("#tooltip")
+							.style("left", mx + "px")
+							.style("top", my + "px")
+                            .html("On page "+page+" of the questionaire the researchers ...")
+                    d3.select("#tooltip").style("visibility","visible")
+                    
+                })
+                .on("mouseout",function(){
+                    var cClass = d3.select(this).attr("class")
+                    d3.selectAll("."+cClass).attr("fill","black")
+                    d3.select("#tooltip").style("visibility","hidden")
+                })
+                
+            }
+            
+            function formatNumber(number){
+                return ("0" + number).slice(-2)
+            }
+            
+            
+            
+		</script>
+	</body>
+</html>
