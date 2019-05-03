@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>basic located</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+    
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+  
+    
+    <style>
+        body{
+            font-size:10px;
+            letter-spacing:.5px;
+            line-height:150%;
+            font-family: 'Libre Baskerville', "Baskerville", serif;
+        }
+        #info{
+            width:600px;
+            padding:20px;
+            border:1px solid black;
+            background-color:rgba(255,255,255,.7);
+            z-index:1;
+        }
+        #chart2{
+            width:50%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            left:0px;
+            z-index:-1;
+            border-right:1px solid black;
+        }
+        #chart1{
+            width:50%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            right:0px;
+            z-index:-1;
+        }
+        #count{
+            position:absolute;
+            top:0px;
+            right:0px;
+            padding:30px;
+            font-size:24px;
+            color:#aaaaaa;
+        }
+        #title1{
+            position:absolute;
+            top:30%;
+            left:0px;
+            padding:20px;
+            z-index:2;
+            background-color:rgba(255,255,255,.7);
+        }
+        #title2{
+            position:absolute;
+            top:30%;
+            left:51%;
+            padding:20px;
+            z-index:2;
+            background-color:rgba(255,255,255,.7);
+        }
+    </style>
+</head>
+<body>
+   
+    <div id="chart1">
+        
+    </div>
+    <div id="chart2">
+    </div>
+    <div id="title1">
+        New connections can only form between one node and the friends of its existing friends.
+    </div>
+    
+    <div id="title2">
+        New connections can be formed between any 2 nodes.
+    </div>
+    <div id="count">
+        0
+    </div>
+    <div id="info">
+        Draft of the most simplified visualization ...<br/>
+        Suppose there are a group of 500 people where each person has at least 1 friend in the group. 
+        If a interface that suggests new friendships only suggests friends of friends, 
+        then how does this group look after a predetermined number of steps?
+        What if the friend suggestions are random?
+    </div>
+<script type="text/javascript" src="setup.js"></script>
+<script type="text/javascript" src="random.js"></script>
+<script type="text/javascript" src="ff_2.js"></script>
+
+
+
+<script type="text/javascript"> 
+    //https://bl.ocks.org/mbostock/1095795
+    
+
+
+
+   
+
+</script>
+</body>
+</html>

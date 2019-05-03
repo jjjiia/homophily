@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>basic located</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    
+    <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+    
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+  
+    
+    <style>
+        body{
+            font-size:12px;
+            letter-spacing:.5px;
+            line-height:150%;
+            font-family: 'Libre Baskerville', "Baskerville", serif;
+        }
+        #info{
+            width:400px;
+            padding:20px;
+            border:1px solid black;
+            background-color:rgba(255,255,255,.7);
+            z-index:1;
+        }
+        #chart1{
+            width:50%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            left:0px;
+            z-index:-1;
+        }
+        #chart2{
+            width:50%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            right:0px;
+            z-index:-1;
+        }
+        #count{
+            position:absolute;
+            top:0px;
+            right:0px;
+            padding:30px;
+            font-size:24px;
+            color:#aaaaaa;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart1">
+        
+    </div>
+    <div id="chart2">
+        
+    </div>
+    <div id="count">
+        0
+    </div>
+    <div id="info">
+        Suppose there are a group of 1000 people where each person has at least 1 friend in the group. 
+        If a interface that suggests new friends only suggests friends of friends, 
+        and each suggestion has a chance of succeeding in accordance with the distance between friends,
+        then how does this group look after a predetermined number of steps?
+        What if friend suggestions included people connected by 2 intermediaries?
+        What if the friend suggestions are random?
+    </div>
+
+<script type="text/javascript"> 
+    //https://bl.ocks.org/mbostock/1095795
+    
+var svg1 = d3.select("#chart1").append("svg")
+    .attr("width",window.innerWidth/2)
+    .attr("height",window.innerHeight)
+var width = +svg1.attr("width")
+var height = +svg1.attr("height")
+    
+var svg2 = d3.select("#chart2").append("svg")
+    .attr("width",window.innerWidth/2)
+    .attr("height",window.innerHeight)
+var width = +svg2.attr("width")
+var height = +svg2.attr("height")
+//var a = {id: "a"},
+//    b = {id: "b"},
+//    c = {id: "c"},
+//    d = {id: "d"},
+//    nodes = [a, b, c, d],
+//    links = [];
+var size = 100
+var maxFriendsEach = 1
+
+var nodes = []
+    for(var i = 0; i<size; i++){
+        nodes.push({id:"_"+i})
+    }
+    
+var links = []
+    for(var n in nodes){
+        var numLinks = Math.round(Math.random()*maxFriendsEach)+1
+        var existingLinks = []
+        
+        for(var l =0; l<numLinks; l++){
+            
+            var randomIndex = Math.round(Math.random()*(nodes.length-1))
+            var randomTarget = nodes[randomIndex]
+            
+            if(randomTarget!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1){
+                existingLinks.push(randomTarget)
+                links.push({source:nodes[n], target:randomTarget})
+            }
+        }
+    }
+    
+  //  all(svg1,"A")
+    var simulation1
+    var simulation2
+    
+    all(svg1,"B",simulation1,"random")
+  //  all(svg2,"A",simulation2,"ff")
+    
+function all(svg,className,simulation,mode){
+
+     simulation = d3.forceSimulation(nodes)
+        .force("charge", d3.forceManyBody().strength(-40))
+        .force("link", d3.forceLink(links).distance(10))
+        .force("x", d3.forceX())
+        .force("y", d3.forceY())
+        .alphaTarget(1)
+        .on("tick", ticked);
+
+    var g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+    var link = g.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link"+className)
+    var node = g.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node"+className);
+
+    restart();
+
+    var sources
+    var sourcesMap
+    var targets
+    var targetsMap
+    updateLinks()
+
+    function updateLinks(){
+        sources = d3.nest()
+                    .key(function(d){
+                        return d.source.id
+                    })
+                    .entries(links)
+        sourcesMap = d3.map(sources,function(d){return d.key})
+
+        targets = d3.nest()
+                    .key(function(d){return d.target.id})
+                    .entries(links)
+        targetsMap = d3.map(targets,function(d){return d.key})
+    }
+
+    var newFriendships = 3000
+    var interval = 100
+            
+    for(var i =0; i<newFriendships; i++){
+        if(mode =="random"){
+            addRandomFriend(i*interval)
+        }else if(mode =="FF"){
+            addCloseFriend(2000+i*interval)
+                    }
+    }         
+                     
+    function addRandomFriend(time){
+   
+        d3.timeout(function(){
+        
+            var randomId = nodes[Math.round(Math.random()*nodes.length)]
+            var randomFriend = nodes[Math.round(Math.random()*nodes.length)]
+            var friends = getNeighbors(randomId.id)
+        
+            d3.select("."+randomId.id).attr("fill","red").transition().delay(interval).attr("fill","#aaa")
+            d3.select("."+randomFriend.id).attr("fill","blue").transition().delay(interval).attr("fill","#aaa")
+        
+            if(randomId!=randomFriend && friends.indexOf(randomFriend)==-1){
+                links.push({source: randomId, target: randomFriend})
+            }
+            restart()
+            d3.select("#count").html((time-2000)/interval)
+        
+        },time)
+    }
+
+
+
+    function addCloseFriend(time){
+   
+        d3.timeout(function(){
+            var randomId = nodes[Math.round(Math.random()*(nodes.length-1))]
+            var friends = getNeighbors(randomId.id)
+            var friendsOfFriends = []
+            for(var f in friends){
+                var friendsOfFriend = getNeighbors(friends[f].id)
+                friendsOfFriends=friendsOfFriends.concat(friendsOfFriend)
+            }
+        
+            var randomFriendOfFriend = friendsOfFriends[Math.round(Math.random()*(friendsOfFriends.length-1))]
+        
+            if(friends.indexOf(randomFriendOfFriend)==-1){
+                d3.select("."+randomId.id).attr("fill","red").transition().delay(interval).attr("fill","#aaa")
+                d3.select("."+randomFriendOfFriend.id).attr("fill","blue").transition().delay(interval).attr("fill","#aaa")
+                links.push({source:randomId,target:randomFriendOfFriend})
+                updateLinks()
+                restart()
+            
+            }else{
+                console.log("not new friend")
+            }
+            d3.select("#count").html((time-2000)/interval)
+        
+        
+        },time)
+    }
+
+    //https://bl.ocks.org/emeeks/9915de8989e2a5c34652
+
+    function getNeighbors(id){
+        var linkedNodes = []
+        if(targetsMap.get(id)!=undefined){
+            for(var t in targetsMap.get(id).values){
+                var nid = targetsMap.get(id).values[t].source//.id
+               // d3.select("."+nid).attr("fill","blue")
+                //d3.select("."+nid+"_"+id).attr("stroke","orange")
+                linkedNodes.push(nid)
+            }
+        }
+    
+        if(sourcesMap.get(id)!=undefined){
+            for(var t in sourcesMap.get(id).values){
+                var nid = sourcesMap.get(id).values[t].target//.id
+              //  d3.select("."+nid).attr("fill","blue")
+             //   d3.select("."+id+"_"+nid).attr("stroke","orange")
+                linkedNodes.push(nid)
+            }
+        }   
+    
+        return linkedNodes
+    }
+
+    function restart() {
+
+      // Apply the general update pattern to the nodes.
+      node = node.data(nodes, function(d) { return d.id;});
+      node.exit().remove();
+      node = node.enter()
+          .append("circle")
+          .attr("class",function(d){return d.id+"_"+className})
+          .attr("fill", "#aaaaaa").attr("stroke-width",3)
+          .attr("stroke", "none").attr("r", 4)
+          .merge(node)
+          .on("mouseover",function(){
+              var id = d3.select(this).attr("class")
+              getNeighbors(id)
+              d3.select(this).attr("fill","red")
+      
+          })
+          .on("mouseout",function(){
+              d3.selectAll("circle").attr("fill","#aaa")
+              d3.selectAll("line").attr("stroke","#aaa")
+          })
+
+      // Apply the general update pattern to the links.
+      link = link.data(links, function(d) { return d.source.id + "-" + d.target.id; });
+      link.exit().remove();
+      link = link.enter()
+      .append("line")
+      .attr("class",function(d){
+          return d.source.id + "_" + d.target.id+"_"+className;
+      })
+      .attr("stroke", "#aaaaaa").attr("stroke-width",.5).merge(link);
+
+      // Update and restart the simulation.
+      simulation.nodes(nodes);
+      simulation.force("link").links(links);
+      simulation.alpha(1).restart();
+    }
+
+    function ticked() {
+        
+      node.attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; })
+
+      link.attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+    } 
+}
+</script>
+</body>
+</html>

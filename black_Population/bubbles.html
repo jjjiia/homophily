@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <body>
+    <div id="stop">change</div>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 
 var width = 600,
     height = 600;
 
-var nodes = d3.range(600).map(function() { return {radius: Math.random() * 12 + 4}; }),
+var nodes = d3.range(487).map(function() { return {radius: Math.random() * 12 + 4}; }),
     root = nodes[0],
     color = d3.scale.category10();
 
@@ -42,8 +43,17 @@ force.on("tick", function(e) {
   svg.selectAll("circle")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; });
+      
 });
 
+d3.select("#stop").on("click",function(){
+    force.stop()
+  svg.selectAll("circle")
+    .transition()
+    .delay(function(d,i){return i*3})
+    .attr("cx", function(d,i) { return i%30*10+100; })
+    .attr("cy", function(d,i) { return Math.floor(i/30)*10+100; });
+})
 
 
 function collide(node) {
