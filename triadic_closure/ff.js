@@ -11,7 +11,9 @@ var simulation2 = d3.forceSimulation(nodes2)
 
 var g2 = svg2.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
 var link2 = g2.append("g").attr("stroke", "#000").attr("stroke-width", 1.5).selectAll(".link"+mode2)
-var node2 = g2.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5).selectAll(".node"+mode2);
+var node2 = g2.append("g")
+    .attr("stroke", "#fff").attr("stroke-width", 1.5)
+    .selectAll(".node"+mode2)
 
 restart2();
 
@@ -136,6 +138,10 @@ function restart2() {
       node2 = node2.enter()
           .append("circle")
           .attr("class",function(d){return d.id+"_"+mode2})
+          .attr("fill",function(d){
+              return groupColor[d.group]
+              return "green"
+          })
           .attr("r", 4)
           .merge(node2)
          

@@ -11,10 +11,12 @@ var width = +svg2.attr("width")
 var height = +svg2.attr("height")
 
 var groupColor = {
-    _1:"red",
-    _2:"green",
-    _3:"blue"
+    _0:"#cf5633",
+    _1:"#6a7bcb",
+    _2:"#bf9441"
 }
+
+
 //var a = {id: "a"},
 //    b = {id: "b"},
 //    c = {id: "c"},
@@ -31,7 +33,7 @@ var nodes = []
 var nodes2 = []
 
     for(var i = 0; i<size; i++){
-        var groupNumber = Math.round(Math.random()*3)
+        var groupNumber = "_"+Math.round(Math.random()*2)
         nodes.push({id:"random_"+i,group:groupNumber})
         nodes2.push({id:"ff_"+i,group:groupNumber})
     }
@@ -49,7 +51,7 @@ var links2 = []
             var randomTarget = nodes[randomIndex]
             var randomTarget2 = nodes2[randomIndex]
             
-            if(randomTarget!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1){
+            if(randomTarget.id!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1){
                 existingLinks.push(randomTarget)
                 links.push({source:nodes[n], target:randomTarget})
                 links2.push({source:nodes2[n], target:randomTarget2})

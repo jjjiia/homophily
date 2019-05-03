@@ -104,6 +104,10 @@
       node.exit().remove();
       node = node.enter()
           .append("circle")
+          .attr("fill",function(d){
+              return groupColor[d.group]
+              return "green"
+          })
           .attr("class",function(d){return d.id+"_"+mode})
           .attr("r", 4)
           .merge(node)
