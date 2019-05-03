@@ -61,6 +61,35 @@ function addCloseFriend(time,count){
             
         var randomFriendOfFriend = friendsOfFriends[Math.round(Math.random()*(friendsOfFriends.length-1))]
 
+            d3.select("."+randomId.id+"_"+mode2).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
+            d3.select("."+randomFriendOfFriend.id+"_"+mode2).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
+        
+        if(friends.indexOf(randomFriendOfFriend)==-1 && randomFriendOfFriend.id!=randomId.id){
+            links2.push({source:randomId,target:randomFriendOfFriend})
+            updateLinks2()        
+            restart2()
+          //  d3.select("#densityF").html("FriendOFriend Density: "+netWorkDensity(links2.length, nodes2.length))
+            
+            d3.select("."+randomId.id+"_"+randomFriendOfFriend.id).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
+        
+        }
+            d3.select("#count").html("New Connections: "+count)
+    
+    },time)
+}
+function addCloseFriendGroup(time,count){
+
+    d3.timeout(function(){
+        var randomId = nodes2[Math.round(Math.random()*(nodes2.length-1))]
+        var friends = getNeighbors2(randomId.id)
+        var friendsOfFriends = []
+        for(var f in friends){
+            var friendsOfFriend = getNeighbors2(friends[f].id)
+            friendsOfFriends=friendsOfFriends.concat(friendsOfFriend)
+        }
+            
+        var randomFriendOfFriend = friendsOfFriends[Math.round(Math.random()*(friendsOfFriends.length-1))]
+
             d3.select("."+randomId.id+"_"+mode2).attr("fill","red").transition().delay(interval).attr("fill","000")
             d3.select("."+randomFriendOfFriend.id+"_"+mode2).attr("fill","red").transition().delay(interval).attr("fill","#000")
         
@@ -77,7 +106,6 @@ function addCloseFriend(time,count){
     
     },time)
 }
-
 function getNeighbors2(id){
     var linkedNodes2 = []
     if(targetsMap2.get(id)!=undefined){
@@ -110,11 +138,7 @@ function restart2() {
           .attr("class",function(d){return d.id+"_"+mode2})
           .attr("r", 4)
           .merge(node2)
-          .on("mouseover",function(){
-              var id = d3.select(this).attr("class")
-              d3.select(this).attr("fill","red")
-          })
-
+         
       // Apply the general update pattern to the links.
       link2 = link2.data(links2, function(d) { return d.source.id + "-" + d.target.id; });
       link2.exit().remove();

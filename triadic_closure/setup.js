@@ -9,6 +9,12 @@ var svg2 = d3.select("#chart2").append("svg")
     .attr("height",window.innerHeight)
 var width = +svg2.attr("width")
 var height = +svg2.attr("height")
+
+var groupColor = {
+    _1:"red",
+    _2:"green",
+    _3:"blue"
+}
 //var a = {id: "a"},
 //    b = {id: "b"},
 //    c = {id: "c"},
@@ -25,8 +31,9 @@ var nodes = []
 var nodes2 = []
 
     for(var i = 0; i<size; i++){
-        nodes.push({id:"random_"+i})
-        nodes2.push({id:"ff_"+i})
+        var groupNumber = Math.round(Math.random()*3)
+        nodes.push({id:"random_"+i,group:groupNumber})
+        nodes2.push({id:"ff_"+i,group:groupNumber})
     }
     
 var links = []

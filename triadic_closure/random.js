@@ -56,8 +56,8 @@
             var randomFriend = nodes[Math.round(Math.random()*(nodes.length-1))]
             var friends = getNeighbors(randomId.id)
         
-            d3.select("."+randomId.id+"_"+mode).attr("fill","red").transition().delay(interval).attr("fill","000")
-            d3.select("."+randomFriend.id+"_"+mode).attr("fill","red").transition().delay(interval).attr("fill","#000")
+            d3.select("."+randomId.id+"_"+mode).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
+            d3.select("."+randomFriend.id+"_"+mode).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
         
             if(randomId!=randomFriend && friends.indexOf(randomFriend)==-1){
                 links.push({source: randomId, target: randomFriend})
@@ -107,12 +107,7 @@
           .attr("class",function(d){return d.id+"_"+mode})
           .attr("r", 4)
           .merge(node)
-          .on("mouseover",function(){
-              var id = d3.select(this).attr("class")
-              getNeighbors(id)
-              d3.select(this).attr("fill","red")
-      
-          })
+        
 
       // Apply the general update pattern to the links.
       link = link.data(links, function(d) { return d.source.id + "-" + d.target.id; });
