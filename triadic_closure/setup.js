@@ -15,10 +15,12 @@ var height = +svg2.attr("height")
 //    d = {id: "d"},
 //    nodes = [a, b, c, d],
 //    links = [];
-var size = 500
+var distance = 5
+var strength = -25
+var size = 1000
 var maxFriendsEach = 1
-    var newFriendships = 500
-    var interval = 500
+    var newFriendships = 1000
+    var interval = 1000
 var nodes = []
 var nodes2 = []
 
@@ -47,6 +49,12 @@ var links2 = []
             }
         }
     }
+    
+function netWorkDensity(links, nodes){
+    var pc = (nodes*(nodes-1))/2
+    var nd = links/pc
+    return nd
+}
     
 function ticked() {
     

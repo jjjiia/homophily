@@ -2,8 +2,8 @@
     var mode = "random"
 
     var simulation = d3.forceSimulation(nodes)
-        .force("charge", d3.forceManyBody().strength(-40))
-        .force("link", d3.forceLink(links).distance(10))
+        .force("charge", d3.forceManyBody().strength(strength))
+        .force("link", d3.forceLink(links).distance(distance))
         .force("x", d3.forceX())
         .force("y", d3.forceY())
         .alphaTarget(1)
@@ -37,11 +37,18 @@
 
 
     for(var i =0; i<newFriendships; i++){
-            addRandomFriend(i*interval)
+        if(i<50){
+            addRandomFriend(2000+i*interval,i)
+            
+        }else if(i<200){
+            addRandomFriend(2000+i*interval/5,i)
+        }else{
+            addRandomFriend(2000+i*interval/20,i)
+        }
 //          addCloseFriend(2000+i*interval)
     }         
                      
-    function addRandomFriend(time){
+    function addRandomFriend(time,count){
    
         d3.timeout(function(){
         
@@ -58,7 +65,9 @@
             restart()
             d3.select("."+randomId.id+"_"+randomFriend.id+"_"+mode).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
             
-            d3.select("#count").html((time)/interval)
+           // d3.select("#densityR").html("Random Density: "+netWorkDensity(links.length, nodes.length))
+            
+            d3.select("#count").html("New Connections: "+count)
         
         },time)
     }
@@ -104,10 +113,6 @@
               d3.select(this).attr("fill","red")
       
           })
-          .on("mouseout",function(){
-              d3.selectAll("circle").attr("fill","#aaa")
-              d3.selectAll("line").attr("stroke","#aaa")
-          })
 
       // Apply the general update pattern to the links.
       link = link.data(links, function(d) { return d.source.id + "-" + d.target.id; });
@@ -118,7 +123,6 @@
           return d.source.id + "_" + d.target.id+"_"+mode;
       })
       .attr("stroke", "#aaaaaa").attr("stroke-width",.5).merge(link);
-
       // Update and restart the simulation.
       simulation.nodes(nodes);
       simulation.force("link").links(links);
