@@ -66,8 +66,8 @@
             d3.select("."+randomId.id+"_"+randomFriend.id+"_"+mode).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
             
            // d3.select("#densityR").html("Random Density: "+netWorkDensity(links.length, nodes.length))
-            
-            d3.select("#count").html("New Connections: "+count)
+            d3.select("#count1").html("New Connections: "+count)
+            getCounts(links,"table1",linksLine1)
         
         },time)
     }

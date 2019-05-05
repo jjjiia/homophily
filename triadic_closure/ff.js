@@ -75,7 +75,8 @@ function addCloseFriend(time,count){
             d3.select("."+randomId.id+"_"+randomFriendOfFriend.id).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
         
         }
-            d3.select("#count").html("New Connections: "+count)
+            getCounts(links2,"table2",linksLine2)
+            d3.select("#count2").html("New Connections: "+count)
     
     },time)
 }
@@ -105,6 +106,8 @@ function addCloseFriendGroup(time,count){
         
         }
             d3.select("#count").html("New Connections: "+count)
+            console.log(links2.length)
+            getCounts(links2,"table2",linksLine2)
     
     },time)
 }

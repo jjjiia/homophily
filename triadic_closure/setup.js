@@ -16,6 +16,19 @@ var groupColor = {
     _2:"#bf9441"
 }
 
+var linksLine1 = formatForLinegraph()
+var linksLine2 = formatForLinegraph()
+
+function formatForLinegraph(){
+    var lineData ={}
+    var groupNames= ["_0","_1","_2"]
+    for(var g in groupNames){
+        for(var f in groupNames){
+            lineData[groupNames[g]+"_"+groupNames[f]]=[]
+        }
+    }
+    return lineData
+}
 
 //var a = {id: "a"},
 //    b = {id: "b"},
@@ -26,9 +39,9 @@ var groupColor = {
 var distance = 5
 var strength = -25
 var size = 500
-var maxFriendsEach = 1
-    var newFriendships = 1000
-    var interval = 1000
+//var maxFriendsEach = 1
+var newFriendships = 2001
+var interval = 500
 var nodes = []
 var nodes2 = []
 
@@ -40,24 +53,56 @@ var nodes2 = []
     
 var links = []
 var links2 = []
-    
+var inGroup = 1
+var outGroup = 1
+
     for(var n in nodes){
-        var numLinks = Math.round(Math.random()*maxFriendsEach)+1
+        var inGroupFriendLeft = inGroup
+        var outGroupFriendLeft = outGroup
         var existingLinks = []
         
-        for(var l =0; l<numLinks; l++){
-            
+        while(inGroupFriendLeft>0){
             var randomIndex = Math.round(Math.random()*(nodes.length-1))
             var randomTarget = nodes[randomIndex]
             var randomTarget2 = nodes2[randomIndex]
-            
-            if(randomTarget.id!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1){
+            if(randomTarget.id!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1&& nodes[n].group==randomTarget.group){
                 existingLinks.push(randomTarget)
                 links.push({source:nodes[n], target:randomTarget})
                 links2.push({source:nodes2[n], target:randomTarget2})
+                inGroupFriendLeft=inGroupFriendLeft-1
+            }
+        }
+        
+        while(outGroupFriendLeft>0){
+            var randomIndex = Math.round(Math.random()*(nodes.length-1))
+            var randomTarget = nodes[randomIndex]
+            var randomTarget2 = nodes2[randomIndex]
+            if(randomTarget.id!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1&& nodes[n].group!=randomTarget.group){
+                existingLinks.push(randomTarget)
+                links.push({source:nodes[n], target:randomTarget})
+                links2.push({source:nodes2[n], target:randomTarget2})
+                outGroupFriendLeft=outGroupFriendLeft-1
             }
         }
     }
+  
+    //for(var n in nodes){
+    //    var numLinks = Math.round(Math.random()*maxFriendsEach)+1
+    //    var existingLinks = []
+    //    
+    //    for(var l =0; l<numLinks; l++){
+    //        
+    //        var randomIndex = Math.round(Math.random()*(nodes.length-1))
+    //        var randomTarget = nodes[randomIndex]
+    //        var randomTarget2 = nodes2[randomIndex]
+    //        
+    //        if(randomTarget.id!=nodes[n].id && existingLinks.indexOf(randomTarget)==-1){
+    //            existingLinks.push(randomTarget)
+    //            links.push({source:nodes[n], target:randomTarget})
+    //            links2.push({source:nodes2[n], target:randomTarget2})
+    //        }
+    //    }
+    //}
     
 function netWorkDensity(links, nodes){
     var pc = (nodes*(nodes-1))/2

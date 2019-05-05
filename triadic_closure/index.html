@@ -4,7 +4,7 @@
      <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <title>basic located</title>
+    <title>closure</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
@@ -31,7 +31,7 @@
             height:100%;
             position:absolute;
             top:0px;
-            left:0px;
+            right:0px;
             z-index:-1;
             border-right:1px solid black;
         }
@@ -39,26 +39,9 @@
             width:50%;
             height:100%;
             position:absolute;
+            left:0px;
             top:0px;
-            right:0px;
             z-index:-1;
-        }
-        #metrics{
-            position:absolute;
-            top:40%;
-            left:50%;
-            margin-left:-60px;
-            width:100px;
-            height:100px;
-            padding:10px;
-            font-size:14px;
-            letter-spacing:1px;
-            color:#000;
-            border:1px solid black;
-            text-align:center;
-            z-index:2;
-            background-color:rgba(255,255,255,1);
-            vertical-align:middle;
         }
         #title1{
             position:absolute;
@@ -75,6 +58,55 @@
             padding:10px;
             z-index:2;
             background-color:rgba(255,255,255,.9);
+        }
+        .count{
+            width:300px;
+            margin:20px;
+        }
+        #table1{
+            position:absolute;
+            left:0px;
+            bottom:0px;
+        }
+        #table2{
+            position:absolute;
+            left:50%;
+            bottom:0px;
+        }
+         th, td {
+            border:1px solid black;
+            padding: 5px;
+            height:30px;
+            width:30px;
+        }
+        #count1{
+            position:absolute;
+            left:0px;
+            bottom:180px;
+            margin:20px;
+        }
+        #count2{
+            position:absolute;
+            left:50%;
+            bottom:180px;
+            margin:20px;
+        }
+        #friendshipGrowth1{
+            position:absolute;
+            left:200px;
+            bottom:0px;
+            margin:20px;
+            border:1px solid black;
+        }
+        #friendshipGrowth2{
+            position:absolute;
+            left:50%;
+            bottom:0px;
+            margin:20px;
+            margin-left:220px;
+            width:300px;
+            height:175px;
+            border:1px solid black;
         }
     </style>
 </head>
@@ -93,7 +125,16 @@
         New connections can be formed between any 2 nodes.
     </div>
     <div id="metrics">
-        <div id="count">New Connections: 0</div>
+        <div id="count1">New Connections: 0</div>
+        <div id="count2">New Connections: 0</div>
+    </div>
+    <div class="count" id="table1">
+    </div>
+    <div class="count" id="table2">
+    </div>
+    <div id="friendshipGrowth1">
+    </div>
+    <div id="friendshipGrowth2">
     </div>
     <div id="info">
         Draft of the most simplified visualization ...<br/>
@@ -105,6 +146,7 @@
 <script type="text/javascript" src="setup.js"></script>
 <script type="text/javascript" src="random.js"></script>
 <script type="text/javascript" src="ff.js"></script>
+<script type="text/javascript" src="count.js"></script>
 
 
 
