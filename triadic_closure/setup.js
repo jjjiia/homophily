@@ -36,12 +36,25 @@ function formatForLinegraph(){
 //    d = {id: "d"},
 //    nodes = [a, b, c, d],
 //    links = [];
-var distance = 5
-var strength = -25
-var size = 500
+var distance = 10
+var strength = -40
+var size = 200
 //var maxFriendsEach = 1
-var newFriendships = 2001
+var newFriendships = 1000
 var interval = 500
+var inGroup = 3
+var outGroup = 1
+var delay = 5000
+
+d3.select("#initial").html(
+    "<br/><strong>group size:</strong><br/>"+size+"<br/><br/>"+
+    "<strong>connections:</strong><br/> "+inGroup+" friends in same group<br/>"+
+    outGroup+" friends out of group<br/><br>"
+    +"<strong>Adding new connections: </strong><br>"+newFriendships
+
+)
+
+
 var nodes = []
 var nodes2 = []
 
@@ -53,8 +66,7 @@ var nodes2 = []
     
 var links = []
 var links2 = []
-var inGroup = 1
-var outGroup = 1
+
 
     for(var n in nodes){
         var inGroupFriendLeft = inGroup

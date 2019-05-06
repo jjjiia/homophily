@@ -19,11 +19,14 @@ restart2();
 
 for(var i =0; i<newFriendships; i++){
     if(i<50){
-        addCloseFriend(2000+i*interval,i)
+        addCloseFriendMostCommon(delay+i*interval,i)
+//        addCloseFriend(2000+i*interval,i)
     }else if(i<200){
-        addCloseFriend(2000+i*interval/5,i)
+        addCloseFriendMostCommon(delay+i*interval/5,i)
+        //addCloseFriend(2000+i*interval/5,i)
     }else{
-        addCloseFriend(2000+i*interval/20,i)
+        addCloseFriendMostCommon(delay+i*interval/20,i)
+       // addCloseFriend(2000+i*interval/20,i)
     }
 }     
 
@@ -60,11 +63,11 @@ function addCloseFriend(time,count){
             var friendsOfFriend = getNeighbors2(friends[f].id)
             friendsOfFriends=friendsOfFriends.concat(friendsOfFriend)
         }
-            
         var randomFriendOfFriend = friendsOfFriends[Math.round(Math.random()*(friendsOfFriends.length-1))]
 
             d3.select("."+randomId.id+"_"+mode2).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
             d3.select("."+randomFriendOfFriend.id+"_"+mode2).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
+        
         
         if(friends.indexOf(randomFriendOfFriend)==-1 && randomFriendOfFriend.id!=randomId.id){
             links2.push({source:randomId,target:randomFriendOfFriend})
@@ -77,10 +80,11 @@ function addCloseFriend(time,count){
         }
             getCounts(links2,"table2",linksLine2)
             d3.select("#count2").html("New Connections: "+count)
+           // growthChart("friendshipGrowth2",linksLine1)
     
     },time)
 }
-function addCloseFriendGroup(time,count){
+function addCloseFriendMostCommon(time,count){
 
     d3.timeout(function(){
         var randomId = nodes2[Math.round(Math.random()*(nodes2.length-1))]
@@ -92,22 +96,47 @@ function addCloseFriendGroup(time,count){
         }
             
         var randomFriendOfFriend = friendsOfFriends[Math.round(Math.random()*(friendsOfFriends.length-1))]
-
-            d3.select("."+randomId.id+"_"+mode2).attr("fill","red").transition().delay(interval).attr("fill","000")
-            d3.select("."+randomFriendOfFriend.id+"_"+mode2).attr("fill","red").transition().delay(interval).attr("fill","#000")
+    
+        var friendsCount = d3.nest()
+        .key(function(d){return d.id}).entries(friendsOfFriends)
         
-        if(friends.indexOf(randomFriendOfFriend)==-1 && randomFriendOfFriend.id!=randomId.id){
-            links2.push({source:randomId,target:randomFriendOfFriend})
-            updateLinks2()        
-            restart2()
-          //  d3.select("#densityF").html("FriendOFriend Density: "+netWorkDensity(links2.length, nodes2.length))
+        friendsCount.sort(function(a,b){
+            return b.values.length - a.values.length
+        })
+        
+        //var mostCommon = friendsCount[0]["values"][0]
+        
+        
+        
+        var friendsNeeded = 1
+        
+        for(var f in friendsCount){
+            var mostCommon = friendsCount[f]["values"][0]
             
-            d3.select("."+randomId.id+"_"+randomFriendOfFriend.id).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
+                if(friends.indexOf(mostCommon)==-1 && mostCommon.id!=randomId.id){
+                    d3.select("."+randomId.id+"_"+mode2).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
+                    d3.select("."+mostCommon.id+"_"+mode2).attr("stroke","red").transition().delay(interval).attr("stroke","#fff")
         
+                    friendsNeeded=friendsNeeded-1
+                    links2.push({source:randomId,target:mostCommon})
+                    updateLinks2()        
+                    restart2()
+                  //  d3.select("#densityF").html("FriendOFriend Density: "+netWorkDensity(links2.length, nodes2.length))
+            
+                    d3.select("."+randomId.id+"_"+mostCommon.id).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
+                    d3.select("#count").html("New Connections: "+count)
+                    getCounts(links2,"table2",linksLine2)
+                 //   growthChart("friendshipGrowth2",linksLine2)
+                    break
+                    
+            }
         }
-            d3.select("#count").html("New Connections: "+count)
-            console.log(links2.length)
-            getCounts(links2,"table2",linksLine2)
+        
+       
+        
+        
+           // growthChart("friendshipGrowth2",linksLine2)
+        
     
     },time)
 }

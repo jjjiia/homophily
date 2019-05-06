@@ -49,7 +49,9 @@
             left:0px;
             padding:10px;
             z-index:2;
-            background-color:rgba(255,255,255,.9);
+            background-color:rgba(255,255,255,.7);
+            font-size:14px;
+            width:300px;
         }
         #title2{
             position:absolute;
@@ -57,7 +59,9 @@
             left:51%;
             padding:10px;
             z-index:2;
-            background-color:rgba(255,255,255,.9);
+            background-color:rgba(255,255,255,.7);
+            font-size:14px;
+            width:300px;
         }
         .count{
             width:300px;
@@ -118,11 +122,14 @@
     <div id="chart2">
     </div>
     <div id="title1">
-        New connections can only form between one node and the friends of its existing friends.
+        At each step, new connections can be formed between any 2 nodes.
     </div>
     
     <div id="title2">
-        New connections can be formed between any 2 nodes.
+        At each step, new connections can only form between one node and another which has the most friends in common with it.
+<!--
+        New connections can only form between one node and the friends of its existing friends.
+-->
     </div>
     <div id="metrics">
         <div id="count1">New Connections: 0</div>
@@ -133,15 +140,19 @@
     <div class="count" id="table2">
     </div>
     <div id="friendshipGrowth1">
-    </div>
-    <div id="friendshipGrowth2">
-    </div>
+       </div>
+       <div id="friendshipGrowth2">
+       </div>
+   
     <div id="info">
-        Draft of the most simplified visualization ...<br/>
-        Suppose there are a group of 500 people where each person has at least 1 friend in the group. 
+        Very very basic triadic closure visualization<br/>
+        Suppose there are people divided equally into 3 groups. 
         If a interface that suggests new friendships only suggests friends of friends, 
-        then how does this group look after a predetermined number of steps?
+        then how does this group look after a predetermined number of new connections are made??
         What if the friend suggestions are random?
+    </div>
+    <div id="initial">
+        
     </div>
 <script type="text/javascript" src="setup.js"></script>
 <script type="text/javascript" src="random.js"></script>

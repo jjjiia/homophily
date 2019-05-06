@@ -38,12 +38,12 @@
 
     for(var i =0; i<newFriendships; i++){
         if(i<50){
-            addRandomFriend(2000+i*interval,i)
+            addRandomFriend(delay+i*interval,i)
             
         }else if(i<200){
-            addRandomFriend(2000+i*interval/5,i)
+            addRandomFriend(delay+i*interval/5,i)
         }else{
-            addRandomFriend(2000+i*interval/20,i)
+            addRandomFriend(delay+i*interval/20,i)
         }
 //          addCloseFriend(2000+i*interval)
     }         
@@ -68,6 +68,7 @@
            // d3.select("#densityR").html("Random Density: "+netWorkDensity(links.length, nodes.length))
             d3.select("#count1").html("New Connections: "+count)
             getCounts(links,"table1",linksLine1)
+           // growthChart("friendshipGrowth1",linksLine1)
         
         },time)
     }

@@ -1,41 +1,64 @@
 //console.log(getCounts(links2,"table2",linksLine2))
 //console.log(getCounts(links,"table1",linksLine1))
 
-
-d3.select("#friendshipGrowth1").append("svg").attr("width",300).attr("height",170)
+var svgH = 170
+var svgW = 300
+var padding = 20
+d3.select("#friendshipGrowth1").append("svg").attr("width",svgW).attr("height",svgH)
+d3.select("#friendshipGrowth2").append("svg").attr("width",svgW).attr("height",svgH)
 //drawLine(getCounts(links,"table1"),"friendshipGrowth1")
-growthChart("friendshipGrowth1",linksLine1)
+//growthChart("friendshipGrowth1",linksLine1)
 
 function growthChart(className,data){
     
+    var inGroupPairs = ["_0__0","_1__1","_2__2"]
     for(var i in data){
-        drawLine(className,data[i],i)
-        break
+        if(inGroupPairs.indexOf(i)>-1){
+            drawLine(className,data[i],i,"red")
+        }else{
+            drawLine(className,data[i],i,"black")
+        }
     }
 }
 
 
-function drawLine(div,linksLine,className){
-    console.log(linksLine.length)
+function drawLine(div,linksLine,className,color){
     var tempData = [2,4,5,5,6,20,30,4,5,5,6,20,30,4,5,5,6,20,30]
     
     var svg = d3.select("#"+div+" svg")
-    var yScale = d3.scaleLinear().domain([0,500]).range([0,200])
+    var yScale = d3.scaleLinear().domain([0,300]).range([svgH,0])
+    var xScale = d3.scaleLinear().domain([0,newFriendships]).range([padding,svgW])
     
-    var linksCountLine = d3.line()
-    .x(function(d,i){
-        console.log([d,i])
-            return i*20
-    })
-    .y(function(d,i){
-        return d
-    }) 
-    
-    svg
-    .data([tempData])
-    .attr("d",linksCountLine)
-    .attr("stroke","red")
-    .attr("stroke-width",2)
+    //var linksCountLine = d3.line()
+    //.x(function(d,i){
+    //    console.log([d,i])
+    //        return i*20
+    //})
+    //.y(function(d,i){
+    //    return d
+    //}) 
+    //
+    //svg
+    //.data([tempData])
+    //.attr("d",linksCountLine)
+    //.attr("stroke","red")
+    //.attr("stroke-width",2)
+        d3.selectAll("."+className+div).remove()
+        
+        
+        svg.append("text").text(className).attr("x",0).attr("y",yScale(linksLine[0])).attr('class',className+div)
+
+        
+        svg.selectAll("."+className+div)
+            .data(linksLine)
+            .enter()
+            .append("circle")
+            .attr('class',className+div)
+            .attr("cx",function(d,i){return xScale(i)})
+            .attr("cy",function(d,i){return yScale(d)})
+            .attr("r",.5)
+            .attr("fill",color)
+       
 }
 
 function getCounts(linkData,div,linksLine){
@@ -81,12 +104,16 @@ function getCounts(linkData,div,linksLine){
     }
     display+="</tr>"
     
+    var sums = {}
+    
     for(var fg in groupNames){
         var fgroup = groupNames[fg]
         display+="<tr><td>"+fgroup+"</td>"
+        sums[fg]=0
         
         for(var g in groupNames){
             var group = groupNames[g]
+            sums[fg]+=linksSubgroupCount[fgroup][group]
             display+="<td>"+linksSubgroupCount[group][fgroup]+"</td>"
             linksLine[group+"_"+fgroup].push(linksSubgroupCount[group][fgroup])
             //console.log(group,fgroup,linksSubgroupCount[group][fgroup])
@@ -97,6 +124,7 @@ function getCounts(linkData,div,linksLine){
     display+="</div>"
 
     d3.select("#"+div).html(display)
-    
+   // console.log(div)
+    console.log(sums)
     return linksSubgroupCount
 }
