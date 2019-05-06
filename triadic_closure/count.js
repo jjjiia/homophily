@@ -100,7 +100,7 @@ function getCounts(linkData,div,linksLine){
     }
     var display = "<table><tr><th>  </th>"
     for(var hg in groupNames){
-        display+="<th>"+groupNames[hg]+"</th>"
+        display+="<th><span style=\"font-size:18px; color:"+groupColor[groupNames[hg]]+"\">"+groupNames[hg].replace("_","")+"</span></th>"
     }
     display+="</tr>"
     
@@ -108,7 +108,8 @@ function getCounts(linkData,div,linksLine){
     
     for(var fg in groupNames){
         var fgroup = groupNames[fg]
-        display+="<tr><td>"+fgroup+"</td>"
+        
+        display+="<tr><td><span style=\"font-size:18px; color:"+groupColor[fgroup]+"\">"+fgroup.replace("_","")+"</span></td>"
         sums[fg]=0
         
         for(var g in groupNames){
@@ -125,6 +126,6 @@ function getCounts(linkData,div,linksLine){
 
     d3.select("#"+div).html(display)
    // console.log(div)
-    console.log(sums)
+   // console.log(sums)
     return linksSubgroupCount
 }

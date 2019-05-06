@@ -42,7 +42,7 @@ var size = 200
 //var maxFriendsEach = 1
 var newFriendships = 1000
 var interval = 500
-var inGroup = 3
+var inGroup = 1
 var outGroup = 1
 var delay = 5000
 

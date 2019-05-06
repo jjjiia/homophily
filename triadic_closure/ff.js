@@ -124,7 +124,7 @@ function addCloseFriendMostCommon(time,count){
                   //  d3.select("#densityF").html("FriendOFriend Density: "+netWorkDensity(links2.length, nodes2.length))
             
                     d3.select("."+randomId.id+"_"+mostCommon.id).attr("stroke","red").attr("stroke-width",2).transition().delay(interval).attr("stroke","#aaa").attr("stroke-width",1)
-                    d3.select("#count").html("New Connections: "+count)
+                    d3.select("#count2").html("New Connections: "+count)
                     getCounts(links2,"table2",linksLine2)
                  //   growthChart("friendshipGrowth2",linksLine2)
                     break
