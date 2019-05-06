@@ -38,7 +38,7 @@ function formatForLinegraph(){
 //    links = [];
 var distance = 10
 var strength = -40
-var size = 200
+var size = 500
 //var maxFriendsEach = 1
 var newFriendships = 1000
 var interval = 500
